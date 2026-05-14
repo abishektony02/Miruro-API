@@ -1,6 +1,7 @@
 import base64, json, gzip, httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
 app = FastAPI(title="Miruro API", version="2.0")
