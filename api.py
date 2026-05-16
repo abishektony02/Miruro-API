@@ -245,10 +245,13 @@ async def _anilist_query(query: str, variables: dict = None):
     if variables:
         body["variables"] = variables
     async with httpx.AsyncClient(timeout=15.0) as client:
-        res = await client.post(ANILIST_URL, json=body)
+        res = await client.post(ANILIST_URL, json=body, headers=HEADERS)
         if res.status_code != 200:
             raise HTTPException(status_code=500, detail="AniList query failed")
-        return res.json().get("data", {})
+        response_data = res.json()
+        if "errors" in response_data:
+            raise HTTPException(status_code=400, detail=f"GraphQL errors: {response_data['errors']}")
+        return response_data.get("data", {})
 
 
 # ─── Homepage ────────────────────────────────────────────────────────────────
